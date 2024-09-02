@@ -1,0 +1,57 @@
+.speed-main-screen-container {
+  padding-left: 2vw;
+  padding-right: 2vw;
+}
+
+.speed-main-screen-header {
+  font-weight: 200;
+  font-size: .8vw;
+  letter-spacing: .2vw;
+
+  @media (max-width: 1000px){
+    font-size: 1.3vw;
+  }
+
+  @media (max-width: 800px){
+    font-size: 2vw;
+  }
+  
+}
+
+.speed-main-screen-footer {
+  justify-content: space-between;
+}
+
+.speed-main-screen-footer-row-1 {
+  /* Styles for the first row of the footer */
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.speed-main-screen-footer-row-2 {
+  /* Styles for the second row of the footer */
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.speed-main-screen-footer-svg-column {
+  /* Styles for columns containing SVGs in the second row */
+  display: flex;
+  align-items: center;
+}
+
+.speed-main-screen-footer-svg-column + .speed-main-screen-footer-svg-column {
+  /* Margin between SVGs in the second row */
+  margin-left: 2vw; /* Adjust gap as needed */
+}
+
+.svg-white{
+  color: white;
+}
+
+.main-speed-screen-speed{
+
+}
+
