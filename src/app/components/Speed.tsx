@@ -1,6 +1,6 @@
 "use client"
 import React, { useState, useEffect } from 'react';
-import SpeedSvg from '../../../public/next.svg'; // Initial SVG
+
 import styles from './Speed.module.css'; // Assuming you are using CSS modules
 
 // SVGs
@@ -8,12 +8,16 @@ import GreenCircle from './Svgs/GreenCircle';
 import YellowCircle from './Svgs/YellowCircle';
 import MoreInfoPage from './MoreInfo';
 
-const Speed: React.FC = () => {
+interface SpeedProps {
+  onButtonClick: () => void;
+}
+
+const Speed: React.FC<SpeedProps> = ({ onButtonClick }) => {
   // State to manage the SVG, speed, and information display
   const [svg, setSvg] = useState(
     <div className="relative flex justify-center items-center">
-      <YellowCircle width="6vw" height="6vw" />
-      <span className="absolute text-white text-[1.7vw] font-light tracking-[.1vw] cursor-pointer">GO</span>
+      <YellowCircle width="95px" height="95px" />
+      <span className="absolute text-white text-[20px] font-light tracking-[.1vw] cursor-pointer">GO</span>
     </div>
   ); // Initial SVG with "GO" text
 
@@ -29,9 +33,10 @@ const Speed: React.FC = () => {
 
   // Handler for click event on YellowCircle
   const handleYellowCircleClick = () => {
-    setSvg(<GreenCircle width="6vw" height="6vw" />); // Change SVG to GreenCircle
+    setSvg(<GreenCircle width="100px" height="100px" />); // Change SVG to GreenCircle
     setShowInfo(false);
     setIsCounting(true); // Start the counter
+    onButtonClick();
   };
 
   // Function to handle closing the overlay
@@ -52,8 +57,8 @@ const Speed: React.FC = () => {
         clearInterval(intervalId); 
         setSpeed(105.31); // Set the final speed to 105.31
         setSvg(<div className="relative flex justify-center items-center">
-          <YellowCircle width="6vw" height="6vw" />
-          <span className="absolute text-white text-[1.7vw] font-light tracking-[.1vw] cursor-pointer">GO</span>
+          <YellowCircle width="95px" height="95px" />
+          <span className="absolute text-white text-[20px] font-light tracking-[.1vw] cursor-pointer">GO</span>
         </div>);
         setIsCounting(false); 
         setShowInfo(true); // Show the "MORE INFORMATION" text
@@ -68,7 +73,7 @@ const Speed: React.FC = () => {
   }, [isCounting]);
 
   return (
-    <div className={`flex-grow ${styles.speedMainContainer} flex justify-end items-endh-full w-full flex-col`}>
+    <div className={`flex-grow ${styles.speedMainContainer} flex justify-end items-endh-full w-full`}>
       <div className={`flex items-center ${styles.speedMainRow} h-full`}>
         {/* Sub Row */}
         <div className={`flex items-center justify-center ${styles.speedSubRow}`}>
@@ -85,7 +90,7 @@ const Speed: React.FC = () => {
             onClick={handleYellowCircleClick}
             style={{ cursor: 'pointer' }} // Optional: change cursor to pointer
           >
-            {svg}
+            {svg }
           </div>
         </div>
         
@@ -93,7 +98,7 @@ const Speed: React.FC = () => {
       {/* Conditionally render the "MORE INFORMATION" row */}
       {showInfo && (
             <div 
-              className={`${styles.speedMoreInfoText} mt-4 cursor-pointer`}
+              className={`${styles.speedMoreInfoText} mt-[20px] cursor-pointer flex`}
               onClick={handleMoreInfoClick}
             >
               MORE INFORMATION
@@ -101,7 +106,7 @@ const Speed: React.FC = () => {
           )}
        {/* Conditionally render the overlay */}
        {showOverlay && (
-        <div className={`${styles.overlay} absolute top-10 bottom-10 w-[96vw] h-90 bg-black opacity-80`}>
+        <div className={`${styles.overlay} absolute top-13 w-[96vw] h-90 bg-black opacity-90`}>
             <MoreInfoPage onClose={handleCloseOverlay} />
           </div>
 
