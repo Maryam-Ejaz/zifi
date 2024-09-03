@@ -106,7 +106,7 @@ const Speed: React.FC<SpeedProps> = ({ onButtonClick }) => {
           )}
        {/* Conditionally render the overlay */}
        {showOverlay && (
-        <div className={`${styles.overlay} absolute top-13 w-[96vw] h-90 bg-black opacity-90`}>
+        <div className={`${styles.overlay} absolute top-20 w-[96vw] h-90 bg-black opacity-90`}>
             <MoreInfoPage onClose={handleCloseOverlay} />
           </div>
 
