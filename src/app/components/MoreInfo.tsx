@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from './MoreInfo.module.css';
 import { useMediaQuery } from '@uidotdev/usehooks';
+import { useLocation } from '../contexts/LocationContext';
 
 // SVGs
 import Arrow from './Svgs/Arrow';
@@ -18,6 +19,7 @@ interface MoreInfoPageProps {
 const MoreInfoPage: React.FC<MoreInfoPageProps> = ({ onClose }) => {
   // UseMediaQuery hook to detect mobile screen
   const isMobile = useMediaQuery('(max-width: 1000px)');
+  const { locationData, isLoading } = useLocation();
 
   return (
     <div className={`flex w-full h-full ${styles.moreInfoRow}`}>
@@ -34,13 +36,19 @@ const MoreInfoPage: React.FC<MoreInfoPageProps> = ({ onClose }) => {
             <table className={`${styles.moreInfoTable}`}>
               <tbody>
                 <tr>
-                  <td className={`${styles.iconCell}`} rowSpan={2}><Flag width="5vh" height="5vh" className={`More-Info-Flag ${styles.svgIcon}`} /></td>
+                  <td className={`${styles.iconCell}`} rowSpan={2}><a href="" target="_blank" rel="noopener noreferrer" className={` ${styles['speed-screen-flag-a']}`}>
+          {locationData?.countryCode ? (
+            <span className={`flag-icon-squared fi-${locationData.countryCode.toLowerCase()} ${styles['speed-screen-flag']}`}></span>
+          ) : (
+            <span className="flag-icon-squaredfi-gb"></span> // Default to Greece flag if country code is not available
+          )}
+        </a></td>
                   <td className={`${styles.labelCell}`}>CITY</td>
-                  <td className={`${styles.dataCell}`}>LONDON</td>
+                  <td className={`${styles.dataCell}`}>{locationData?.city.toLocaleUpperCase()}</td>
                 </tr>
                 <tr>
                   <td className={`${styles.labelCell}`}>COUNTRY</td>
-                  <td className={`${styles.dataCell}`}>UNITED KINGDOM</td>
+                  <td className={`${styles.dataCell}`}>{locationData?.country.toLocaleUpperCase()}</td>
                 </tr>
                 <tr>
                   <td className={`${styles.emptyCell}`} rowSpan={1}></td>
@@ -50,11 +58,11 @@ const MoreInfoPage: React.FC<MoreInfoPageProps> = ({ onClose }) => {
                 <tr>
                   <td className={`${styles.iconCell}`} rowSpan={5}><UserIcon width="5vh" height="5vh" className={` ${styles.svgIcon}`} /></td>
                   <td className={`${styles.labelCell}`}>LATITUDE</td>
-                  <td className={`${styles.dataCell}`}>51.514882</td>
+                  <td className={`${styles.dataCell}`}>{locationData?.latitude}</td>
                 </tr>
                 <tr>
                   <td className={`${styles.labelCell}`}>LONGITUDE</td>
-                  <td className={`${styles.dataCell}`}>-0.123563</td>
+                  <td className={`${styles.dataCell}`}>{locationData?.longitude}</td>
                 </tr>
                 <tr>
                   <td className={`${styles.labelCell}`}>INTERNAL IP</td>

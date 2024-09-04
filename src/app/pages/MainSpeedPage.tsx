@@ -1,8 +1,10 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect} from 'react';
 import dynamic from 'next/dynamic';
 const Speed = dynamic(() => import('../components/Speed'), { ssr: false });
 import styles from './MainSpeedPage.module.css';
+import { useLocation } from '../contexts/LocationContext';
+import "/node_modules/flag-icons/css/flag-icons.min.css";
 
 // Svgs
 import ZifiHeaderIcon from '../components/Svgs/ZifiHeaderIcon';
@@ -14,6 +16,7 @@ import { useMediaQuery } from '@uidotdev/usehooks';
 
 const MainSpeedPage: React.FC = () => {
   const [changeText, setChangeText] = useState("YOUR INTERNET SPEED");
+  const { locationData, isLoading } = useLocation();
   const isMobile = useMediaQuery('(max-width: 1000px)'); // Media query to check for mobile screens
 
   const handleButtonClick = () => {
@@ -25,12 +28,16 @@ const MainSpeedPage: React.FC = () => {
   return (
     <div className={`${styles['speed-main-screen-container']} min-h-screen bg-black text-white flex flex-col`}>
       <header className={`${styles['speed-main-screen-header']} flex justify-between items-center mb-4`} style={{ marginBottom: isMobile && changeText == "MORE INFORMATION" ? '0px' : '10px' }}>
-        <a href="" target="_blank" rel="noopener noreferrer">
-          <ZifiHeaderIcon width="52" height="52" fill='white' className={`${styles['speed-screen-svg-zifi']}`} style={{ marginBottom: isMobile && changeText == "MORE INFORMATION" ? '0px' : '25px' }} />
+        <a href="" target="_blank" rel="noopener noreferrer" >
+          <ZifiHeaderIcon width="52" height="52" fill='white' className={`${styles['speed-screen-svg-zifi']}`}  />
         </a>
         <span className={`${styles['speed-main-screen-text']} text-center`} style={{ display: isMobile && changeText === "MORE INFORMATION" ? 'none' : 'flex' }}>{changeText}</span>
-        <a href="" target="_blank" rel="noopener noreferrer">
-          <Flag width="52" height="42" fill='white' className={`${styles['speed-screen-flag']}`} />
+        <a href="" target="_blank" rel="noopener noreferrer" className={` ${styles['speed-screen-flag-a']}`}>
+          {locationData?.countryCode ? (
+            <span className={`flag-icon-squared fi-${locationData.countryCode.toLowerCase()} ${styles['speed-screen-flag']}`}></span>
+          ) : (
+            <span className="flag-icon-squaredfi-gb"></span> // Default to Greece flag if country code is not available
+          )}
         </a>
       </header>
 
