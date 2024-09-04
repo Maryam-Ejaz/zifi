@@ -2,21 +2,23 @@
   padding-top: 1vw;
   padding-left: 2vw;
   padding-right: 2vw;
+  overflow-y: hidden;
 }
 
 .speed-main-screen-header {
   font-weight: 200;
   font-size: .8vw;
   letter-spacing: .3vw;
+  margin-bottom: 40px;
 
-  @media (max-width: 1000px){
+  @media (max-width: 1000px) {
     font-size: 1.3vw;
   }
 
-  @media (max-width: 800px){
+  @media (max-width: 800px) {
     font-size: 2vw;
   }
-  
+
 }
 
 .speed-main-screen-footer {
@@ -40,11 +42,11 @@
   align-items: center;
 }
 
-.speed-main-screen-footer-svg-column + .speed-main-screen-footer-svg-column {
-  margin-left: 2vw; 
+.speed-main-screen-footer-svg-column+.speed-main-screen-footer-svg-column {
+  margin-left: 2vw;
 }
 
-.svg-white{
+.svg-white {
   color: white;
 }
 
@@ -53,23 +55,12 @@
 /* Mobile styles */
 @media only screen and (max-width: 1000px) {
 
-  /*footer*/
-  .speed-main-screen-footer-row-2 {
-    width: 53vw;
-    justify-content: space-between;
-  }
-
-  .speed-main-screen-footer-svg-column {
-    margin-left: 0; 
-  }
-
-
   /*header*/
   .speed-main-screen-header {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-bottom: 2rem; /* Adjust as needed */
+    margin-bottom: 2rem;
   }
 
   .speed-main-screen-text {
@@ -77,37 +68,21 @@
   }
 
   .speed-screen-flag {
-    position: absolute; /* Position absolutely within the header */
-    top: 1vw; /* Align with the top edge */
-    right: 2vw; /* Align with the right edge */
+    position: absolute;
+    top: 1vw;
+    right: 2vw;
     margin-top: 10px;
     width: 35px;
     height: 35px;
   }
 
-  .speed-screen-svg-zifi{
-    margin-bottom: 25px;
+  .speed-screen-svg-zifi {
     height: 55px;
     width: 55px;
   }
 
-  .speed-screen-speed{
+  .speed-screen-speed {
     flex-direction: column;
   }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

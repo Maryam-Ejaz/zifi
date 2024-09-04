@@ -30,7 +30,6 @@
   align-items: center;
   justify-content: center;
   height: 40vh;
-  /* Ensure it takes full height of the parent */
 }
 
 .speedSubColumnText {
@@ -54,7 +53,7 @@
 }
 
 .overlay {
-  z-index: 10; /* Make sure the overlay is on top of everything else */
+  z-index: 10; 
   justify-content: center;
   align-items: center;
 }
@@ -78,8 +77,8 @@
   }
 
   .speedSubRow{
-    line-height: 40px;
-    font-size: 120px;
+    line-height: 25vw;
+    font-size: 30vw;
   }
 
   .speedSubColumn{
@@ -88,12 +87,12 @@
   }
 
   .speedSubColumnSvg{
-    padding-top: 80px;
+    padding-top: 100px;
   }
 
   .speedSubColumnText{
     font-size: 30px;
-    padding-bottom: 150px;
+    padding-bottom: 100px;
   }
 
   .speedSubColumnSvg{
@@ -111,10 +110,12 @@
   }
 
   .overlay{
-    width: 100vw;
+    /* width: 100vw;
     opacity: 100%;
-    top: 100px;
-    height: 80vh;
+    top: 50px;
+    height: 90vh; */
+    margin-top: 10px;
+    justify-content: flex-start;
   }
 
 

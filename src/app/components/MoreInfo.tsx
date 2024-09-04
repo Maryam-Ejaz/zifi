@@ -1,5 +1,6 @@
 import React from 'react';
 import styles from './MoreInfo.module.css';
+import { useMediaQuery } from '@uidotdev/usehooks';
 
 // SVGs
 import Arrow from './Svgs/Arrow';
@@ -15,9 +16,12 @@ interface MoreInfoPageProps {
 }
 
 const MoreInfoPage: React.FC<MoreInfoPageProps> = ({ onClose }) => {
+  // UseMediaQuery hook to detect mobile screen
+  const isMobile = useMediaQuery('(max-width: 1000px)');
+
   return (
     <div className={`flex w-full h-full ${styles.moreInfoRow}`}>
-      <div className={`flex flex-col ${styles.moreInfoColumn } `}>
+      <div className={`flex flex-col ${styles.moreInfoColumn} `}>
         {/* Left Column */}
         <div className={`flex flex-col ${styles.moreInfoColumnOne}`}>
           {/* Row 1: Text */}
@@ -30,7 +34,7 @@ const MoreInfoPage: React.FC<MoreInfoPageProps> = ({ onClose }) => {
             <table className={`${styles.moreInfoTable}`}>
               <tbody>
                 <tr>
-                  <td className={`${styles.iconCell}`} rowSpan={2}><Flag width="5vh" height="5vh"  className={`More-Info-Flag ${styles.svgIcon}`} /></td>
+                  <td className={`${styles.iconCell}`} rowSpan={2}><Flag width="5vh" height="5vh" className={`More-Info-Flag ${styles.svgIcon}`} /></td>
                   <td className={`${styles.labelCell}`}>CITY</td>
                   <td className={`${styles.dataCell}`}>LONDON</td>
                 </tr>
@@ -44,7 +48,7 @@ const MoreInfoPage: React.FC<MoreInfoPageProps> = ({ onClose }) => {
                   <td className={`${styles.emptyDataCell}`}></td>
                 </tr>
                 <tr>
-                  <td className={`${styles.iconCell}`} rowSpan={5}><UserIcon width="5vh" height="5vh" className={` ${styles.svgIcon}`}/></td>
+                  <td className={`${styles.iconCell}`} rowSpan={5}><UserIcon width="5vh" height="5vh" className={` ${styles.svgIcon}`} /></td>
                   <td className={`${styles.labelCell}`}>LATITUDE</td>
                   <td className={`${styles.dataCell}`}>51.514882</td>
                 </tr>
@@ -70,7 +74,7 @@ const MoreInfoPage: React.FC<MoreInfoPageProps> = ({ onClose }) => {
                   <td className={`${styles.emptyDataCell}`}></td>
                 </tr>
                 <tr>
-                  <td className={`${styles.iconCell}`} rowSpan={4}><WifiIcon width="5vh" height="5vh" className={` ${styles.svgIcon}`}/></td>
+                  <td className={`${styles.iconCell}`} rowSpan={4}><WifiIcon width="5vh" height="5vh" className={` ${styles.svgIcon}`} /></td>
                   <td className={`${styles.labelCell}`}>PROVIDER</td>
                   <td className={`${styles.dataCell}`}>VIRGIN MEDIA</td>
                 </tr>
@@ -125,14 +129,14 @@ const MoreInfoPage: React.FC<MoreInfoPageProps> = ({ onClose }) => {
               >
                 <ArrowDown width="5vh" height="5vh" />
               </div>
-              
+
 
             </div>
 
           </div>
           <div className={`${styles.speedMoreInfoText} justify-center items-center`}>
-                DOWNLOAD
-              </div>
+            DOWNLOAD
+          </div>
 
 
 
@@ -155,19 +159,28 @@ const MoreInfoPage: React.FC<MoreInfoPageProps> = ({ onClose }) => {
                 className={`${styles.speedSubColumnSvg} flex items-center justify-center mt-2 relative `}>
                 <ArrowUp width="5vh" height="5vh" />
               </div>
-              
+
             </div>
 
           </div>
           <div className={`${styles.speedMoreInfoText}`}>
-                UPLOAD
-              </div>
+            UPLOAD
+          </div>
 
 
 
 
         </div>
       </div>
+
+      {isMobile && (
+
+        <div
+          className={`${styles.speedMoreInfoTitle} mt-[20px] cursor-pointer`}
+        >
+          MORE INFORMATION
+        </div>
+      )}
     </div>
   );
 };
