@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from 'react';
-import Speed from '../components/Speed';
+import dynamic from 'next/dynamic';
+const Speed = dynamic(() => import('../components/Speed'), { ssr: false });
 import styles from './MainSpeedPage.module.css';
 
 // Svgs
