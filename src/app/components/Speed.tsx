@@ -116,7 +116,11 @@ const Speed: React.FC<SpeedProps> = ({ onButtonClick }) => {
                   {svg}
                 </div>
 
-                {!isMobile && showInfo && (
+                
+              </div>
+              
+            </div>
+            {!isMobile && showInfo && (
                   <div
                     className={`${styles.speedMoreInfoText} mt-[20px] cursor-pointer`}
                     onClick={handleMoreInfoClick}
@@ -124,8 +128,6 @@ const Speed: React.FC<SpeedProps> = ({ onButtonClick }) => {
                     MORE INFORMATION
                   </div>
                 )}
-              </div>
-            </div>
 
             {/* Conditionally render the overlay */}
             {showOverlay && (
