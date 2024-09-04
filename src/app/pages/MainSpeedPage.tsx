@@ -32,7 +32,7 @@ const MainSpeedPage: React.FC = () => {
           <ZifiHeaderIcon width="52" height="52" fill='white' className={`${styles['speed-screen-svg-zifi']}`}  />
         </a>
         <span className={`${styles['speed-main-screen-text']} text-center`} style={{ display: isMobile && changeText === "MORE INFORMATION" ? 'none' : 'flex' }}>{changeText}</span>
-        <a href="" target="_blank" rel="noopener noreferrer" className={` ${styles['speed-screen-flag-a']}`}>
+        <a href="" target="_blank" rel="noopener noreferrer" className={` ${styles['speed-screen-flag-a']}`} style={{ display: isMobile && changeText == "MORE INFORMATION" ? 'None' : 'flex' }}>
           {locationData?.countryCode ? (
             <span className={`flag-icon-squared fi-${locationData.countryCode.toLowerCase()} ${styles['speed-screen-flag']}`}></span>
           ) : (
