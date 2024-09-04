@@ -27,12 +27,12 @@ const MainSpeedPage: React.FC = () => {
 
   return (
     <div className={`${styles['speed-main-screen-container']} min-h-screen bg-black text-white flex flex-col`}>
-      <header className={`${styles['speed-main-screen-header']} flex justify-between items-center mb-4`} style={{ marginBottom: isMobile && changeText == "MORE INFORMATION" ? '0px' : '10px' }}>
+      <header className={`${styles['speed-main-screen-header']} flex justify-between items-center mb-4`} style={{ marginBottom: isMobile && changeText === "MORE INFORMATION" ? '0px' : '10px' }}>
         <a href="" target="_blank" rel="noopener noreferrer" >
           <ZifiHeaderIcon width="52" height="52" fill='white' className={`${styles['speed-screen-svg-zifi']}`}  />
         </a>
         <span className={`${styles['speed-main-screen-text']} text-center`} style={{ display: isMobile && changeText === "MORE INFORMATION" ? 'none' : 'flex' }}>{changeText}</span>
-        <a href="" target="_blank" rel="noopener noreferrer" className={` ${styles['speed-screen-flag-a']}`} style={{ display: isMobile && changeText == "MORE INFORMATION" ? 'None' : 'flex' }}>
+        <a href="" target="_blank" rel="noopener noreferrer" className={` ${styles['speed-screen-flag-a']}`} style={{ height: isMobile && changeText === "MORE INFORMATION" ? '1px' : '40px' }}>
           {locationData?.countryCode ? (
             <span className={`flag-icon-squared fi-${locationData.countryCode.toLowerCase()} ${styles['speed-screen-flag']}`}></span>
           ) : (

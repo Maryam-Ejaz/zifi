@@ -51,6 +51,7 @@
 }
 
 .speed-screen-flag-a{
+  flex: block;
   width: 40px;
   height: 40px;
 }
