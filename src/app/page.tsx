@@ -7,7 +7,7 @@ export default function Home() {
   return (
     <ThemeProvider>
       <LocationProvider>
-      <MainSpeedPage/>
+        <MainSpeedPage />
       </LocationProvider>
     </ThemeProvider>
   );

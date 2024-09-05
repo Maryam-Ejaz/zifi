@@ -8,7 +8,7 @@ export async function getLocation() {
   
       const { latitude, longitude } = position.coords;
   
-      // Use the Google Maps Geocoding API to get more details about the location
+      // Use the Google Maps Geocoding API
       const response = await fetch(
         `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyCiSILGgboKxTZ4aPIEM6Qi8fdtoIU-DMk`
       );

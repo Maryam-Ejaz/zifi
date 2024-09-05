@@ -59,7 +59,7 @@
 .labelCell {
   border: none;
   padding: 2px;
-  padding-left: 1vw;
+  padding-left: 25px;
   padding-right: 6px;
   padding-top:.5vw;
   text-align: left;
@@ -70,7 +70,7 @@
 .dataCell {
   border: none;
   padding: 2px;
-  padding-left: 6vw;
+  padding-left: 55px;
   padding-top: 2.5;
 }
 
