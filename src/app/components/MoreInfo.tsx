@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './MoreInfo.module.css';
 import { useMediaQuery } from '@uidotdev/usehooks';
 import { useLocation } from '../contexts/LocationContext';
+import { ip, ipv6, mac } from 'address';
 
 // SVGs
 import Arrow from './Svgs/Arrow';
@@ -11,6 +12,48 @@ import Flag from './Svgs/flag';
 import ArrowUp from './Svgs/ArrowUp';
 import ArrowDown from './Svgs/ArrowDown';
 
+// Function to get IP address (you need to implement this or use an existing library)
+const getIpAddress = async () => {
+  try {
+    const response = await fetch('https://api.ipify.org?format=json');
+    const data = await response.json();
+    return data.ip;
+  } catch (error) {
+    console.error('Error fetching IP address:', error);
+    return 'N/A';
+  }
+};
+
+// Function to get local IP address
+const getLocalIP = async () => {
+  try {
+    const ipRegex = /([0-9]{1,3}\.){3}[0-9]{1,3}/;
+
+    const pc = new RTCPeerConnection({
+      iceServers: [],
+    });
+
+    pc.createDataChannel('');
+
+    const offer = await pc.createOffer();
+    await pc.setLocalDescription(offer);
+
+    return new Promise<string>((resolve) => {
+      pc.onicecandidate = (ice) => {
+        if (ice && ice.candidate && ice.candidate.candidate) {
+          const ipMatch = ipRegex.exec(ice.candidate.candidate);
+          if (ipMatch) {
+            resolve(ipMatch[0]);
+            pc.onicecandidate = null; 
+          }
+        }
+      };
+    });
+  } catch (error) {
+    console.error('Error fetching local IP address:', error);
+    return 'N/A';
+  }
+};
 
 interface MoreInfoPageProps {
   onClose: () => void; // Prop to handle closing the overlay
@@ -20,6 +63,100 @@ const MoreInfoPage: React.FC<MoreInfoPageProps> = ({ onClose }) => {
   // UseMediaQuery hook to detect mobile screen
   const isMobile = useMediaQuery('(max-width: 1000px)');
   const { locationData, isLoading } = useLocation();
+
+  // State for date and time
+  const [currentDate, setCurrentDate] = useState<string>('LOADING..');
+  const [currentTime, setCurrentTime] = useState<string>('LOADING..');
+  const [macAddress, setMacAddress] = useState<string>('LOADING..');
+  const [internalIp, setInternalIp] = useState<string>('LOADING..');
+  const [externalIp, setExternalIp] = useState<string>('LOADING..');
+
+  // Function to format date and time
+  const formatDate = (date: Date) => {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+
+  const formatTime = (date: Date) => {
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${hours}:${minutes}`;
+  };
+
+   // Update date and time every second
+   useEffect(() => {
+    const intervalId = setInterval(() => {
+      const now = new Date();
+      setCurrentDate(formatDate(now));
+      setCurrentTime(formatTime(now));
+    }, 1000);
+
+    // Clean up interval on component unmount
+    return () => clearInterval(intervalId);
+  }, []);
+
+  // Fetch MAC address and IP addresses
+  useEffect(() => {
+    // macaddress.one()
+    //   .then(mac => setMacAddress(mac))
+    //   .catch(err => console.error('Error retrieving MAC address:', err));
+    
+    getIpAddress().then(ip => {
+      setExternalIp(ip);
+    });
+
+  }, []);
+
+  // useEffect(() => {
+  //   const fetchNetworkInfo = async () => {
+  //     try {
+  //       // Fetch the network address
+  //       const addr = await address();
+
+  //       setInternalIp(addr.ip || 'N/A'); 
+  
+  
+
+  //     } catch (error) {
+  //       console.error('Error fetching network information:', error);
+  //     }
+  //   };
+  
+  //   fetchNetworkInfo();
+  // }, []);
+
+  // useEffect(() => {
+  //   // Retrieve IPv4 address
+  //   setInternalIp(ip() || 'N/A');
+
+
+  //   // Retrieve MAC address
+  //   mac((err, addr) => {
+  //     if (err) {
+  //       console.error('Error fetching MAC address:', err);
+  //     } else {
+  //       setMacAddress(addr || 'N/A');
+  //     }
+  //   });
+  // }, []);
+  
+
+  useEffect(() => {
+    async function fetchMacAddress() {
+      try {
+        const response = await fetch('/api/getAddress');
+        const data = await response.json();
+        setMacAddress(data.macAddress);
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    fetchMacAddress();
+  }, []);
+
 
   return (
     <div className={`flex w-full h-full ${styles.moreInfoRow}`}>
@@ -66,11 +203,11 @@ const MoreInfoPage: React.FC<MoreInfoPageProps> = ({ onClose }) => {
                 </tr>
                 <tr>
                   <td className={`${styles.labelCell}`}>INTERNAL IP</td>
-                  <td className={`${styles.dataCell}`}>10.0.0.186</td>
+                  <td className={`${styles.dataCell}`}>10.0.0.183</td>
                 </tr>
                 <tr>
                   <td className={`${styles.labelCell}`}>EXTERNAL IP</td>
-                  <td className={`${styles.dataCell}`}>82.41.174.63</td>
+                  <td className={`${styles.dataCell}`}>{externalIp}</td>
                 </tr>
                 <tr>
                   <td className={`${styles.labelCell}`}>MAC ADDRESS</td>
@@ -106,11 +243,11 @@ const MoreInfoPage: React.FC<MoreInfoPageProps> = ({ onClose }) => {
                 <tr>
                   <td className={`${styles.emptyCell}`} rowSpan={2}></td>
                   <td className={`${styles.labelCell}`}>DATE</td>
-                  <td className={`${styles.dataCell}`}>27/03/2024</td>
+                  <td className={`${styles.dataCell}`}>{currentDate}</td>
                 </tr>
                 <tr>
                   <td className={`${styles.labelCell}`}>TIME</td>
-                  <td className={`${styles.dataCell}`}>15:45</td>
+                  <td className={`${styles.dataCell}`}>{currentTime}</td>
                 </tr>
               </tbody>
             </table>

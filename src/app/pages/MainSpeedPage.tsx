@@ -36,7 +36,7 @@ const MainSpeedPage: React.FC = () => {
           {locationData?.countryCode ? (
             <span className={`flag-icon-squared fi-${locationData.countryCode.toLowerCase()} ${styles['speed-screen-flag']}`}></span>
           ) : (
-            <span className="flag-icon-squaredfi-gb"></span> // Default to Greece flag if country code is not available
+            <span className="flag-icon-squaredfi-gb"></span> 
           )}
         </a>
       </header>

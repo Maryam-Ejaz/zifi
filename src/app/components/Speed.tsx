@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import styles from './Speed.module.css'; 
 import { useMediaQuery } from '@uidotdev/usehooks';
+// import { FastAPI, SpeedUnits } from 'fast-api-speedtest';
 
 // SVGs
 import GreenCircle from './Svgs/GreenCircle';
@@ -18,7 +19,7 @@ const Speed: React.FC<SpeedProps> = ({ onButtonClick }) => {
       <YellowCircle width="95px" height="95px" />
       <span className="absolute text-white text-[20px] font-light tracking-[.1vw] cursor-pointer">GO</span>
     </div>
-  ); // Initial SVG with "GO" text
+  );
 
   const [speed, setSpeed] = useState(0); // Initial speed
   const [isCounting, setIsCounting] = useState(false); // To track if the counter is running
@@ -28,6 +29,13 @@ const Speed: React.FC<SpeedProps> = ({ onButtonClick }) => {
   // UseMediaQuery hook to detect mobile screen
   const isMobile = useMediaQuery('(max-width: 1000px)');
 
+  // // Initialize FastAPI instance
+  // const FastTest = new FastAPI({
+  //   measureUpload: true,
+  //   downloadUnit: SpeedUnits.MBps,
+  //   timeout: 60000
+  // });
+
   // Handler for click event on "MORE INFORMATION"
   const handleMoreInfoClick = () => {
     setShowOverlay(true); // Show the overlay
@@ -35,11 +43,17 @@ const Speed: React.FC<SpeedProps> = ({ onButtonClick }) => {
   };
 
   // Handler for click event on YellowCircle
-  const handleYellowCircleClick = () => {
+  const handleYellowCircleClick = async () => {
     setSvg(<GreenCircle width="100px" height="100px" />); // Change SVG to GreenCircle
     setShowInfo(false);
     setIsCounting(true); // Start the counter
 
+    // try {
+    //   const result = await FastTest.runTest();
+    //   setSpeed(result.downloadSpeed); // Set the speed from the test result
+    // } catch (e) {
+    //   console.error(e);
+    // }
   };
 
   // Function to handle closing the overlay
@@ -59,7 +73,7 @@ const Speed: React.FC<SpeedProps> = ({ onButtonClick }) => {
       // After 3 seconds, stop the counter and set the final speed
       const timeoutId = setTimeout(() => {
         clearInterval(intervalId);
-        setSpeed(105.31); 
+        setSpeed(105.31); // Use the actual speed from the test result instead
         setSvg(<div className="relative flex justify-center items-center">
           <YellowCircle width="95px" height="95px" />
           <span className="absolute text-white text-[20px] font-light tracking-[.1vw] cursor-pointer">GO</span>
@@ -115,19 +129,18 @@ const Speed: React.FC<SpeedProps> = ({ onButtonClick }) => {
                 >
                   {svg}
                 </div>
-
                 
               </div>
               
             </div>
             {!isMobile && showInfo && (
-                  <div
-                    className={`${styles.speedMoreInfoText} mt-[20px] cursor-pointer`}
-                    onClick={handleMoreInfoClick}
-                  >
-                    MORE INFORMATION
-                  </div>
-                )}
+              <div
+                className={`${styles.speedMoreInfoText} mt-[20px] cursor-pointer`}
+                onClick={handleMoreInfoClick}
+              >
+                MORE INFORMATION
+              </div>
+            )}
 
             {/* Conditionally render the overlay */}
             {showOverlay && (
