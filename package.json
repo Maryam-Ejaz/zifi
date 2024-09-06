@@ -14,7 +14,7 @@
     "address": "^2.0.3",
     "binternalip": "^1.0.4",
     "convert-units": "^2.3.4",
-    "fast-speedtest-api": "^0.3.2",
+    "fast-api-speedtest": "^0.0.6",
     "flag-icons": "^7.2.3",
     "getmac": "^6.6.0",
     "getmac-offline": "^1.0.1",
@@ -24,7 +24,8 @@
     "my-local-ip-is": "^1.0.7",
     "next": "14.2.7",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "universal-speedtest": "^2.0.6"
   },
   "devDependencies": {
     "@types/node": "^20.16.5",

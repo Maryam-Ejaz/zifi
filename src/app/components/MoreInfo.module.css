@@ -61,7 +61,7 @@
   padding: 2px;
   padding-left: 25px;
   padding-right: 6px;
-  padding-top:.5vw;
+  padding-top: 10px;
   text-align: left;
   color: gray;
   min-width: 2vw;
@@ -71,7 +71,7 @@
   border: none;
   padding: 2px;
   padding-left: 55px;
-  padding-top: 2.5px;
+  padding-top: 10px;
 }
 
 .emptyLabelCell, .emptyDataCell {
