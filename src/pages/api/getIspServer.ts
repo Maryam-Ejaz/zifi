@@ -7,8 +7,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       console.log(data);
   
       // Extract client ISP and first server city
-      const clientIsp = data.client?.isp || 'LOADING..';
-      const firstServerCity = data.targets[0]["location"].city || 'LOADING..';
+      const clientIsp = data.client.isp || 'LOADING..';
+      const firstServerCity = data.targets[0].location.city || 'LOADING..';
       console.log(firstServerCity);
   
       res.status(200).json({ clientIsp, firstServerCity });
