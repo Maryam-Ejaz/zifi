@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@mui/material": "^6.0.2",
+    "@network-utils/arp-lookup": "^2.1.0",
     "@uidotdev/usehooks": "^2.4.1",
     "address": "^2.0.3",
     "binternalip": "^1.0.4",
@@ -23,6 +24,8 @@
     "macaddress-local-machine": "^1.0.7",
     "my-local-ip-is": "^1.0.7",
     "next": "14.2.7",
+    "node-arp": "^1.0.6",
+    "node-wifi": "^2.0.16",
     "react": "^18",
     "react-dom": "^18",
     "universal-speedtest": "^2.0.6"

@@ -1,8 +1,7 @@
-"use client";
-import React, { useState, useEffect } from 'react';
-import styles from './Speed.module.css'; 
+"use client"
+import React, { useState, useEffect, useRef } from 'react';
+import styles from './Speed.module.css';
 import { useMediaQuery } from '@uidotdev/usehooks';
-// import { FastAPI, SpeedUnits } from 'fast-api-speedtest';
 
 // SVGs
 import GreenCircle from './Svgs/GreenCircle';
@@ -17,24 +16,49 @@ const Speed: React.FC<SpeedProps> = ({ onButtonClick }) => {
   const [svg, setSvg] = useState(
     <div className="relative flex justify-center items-center">
       <YellowCircle width="95px" height="95px" />
-      <span className="absolute text-white text-[20px] font-light tracking-[.1vw] cursor-pointer">GO</span>
+      <span className="absolute text-white text-[20px] font-light tracking-[.1vw] cursor-pointer" style={{ zIndex: 10 }}>GO</span>
     </div>
   );
 
-  const [speed, setSpeed] = useState(0); // Initial speed
+  const [speed, setSpeed] = useState("0"); // Initial speed
+  const [speed_, setSpeed_] = useState("0"); // Initial speed
   const [isCounting, setIsCounting] = useState(false); // To track if the counter is running
   const [showInfo, setShowInfo] = useState(false);
   const [showOverlay, setShowOverlay] = useState(false);
 
+  const [download, setDownload] = useState('LOADING..');
+  const [upload, setUpload] = useState('LOADING..');
+  const [ping, setPing] = useState('LOADING..');
+
+  const [download_, setDownload_] = useState('LOADING..');
+  const [upload_, setUpload_] = useState('LOADING..');
+  const [ping_, setPing_] = useState('LOADING..');
+
+
+
   // UseMediaQuery hook to detect mobile screen
   const isMobile = useMediaQuery('(max-width: 1000px)');
 
-  // // Initialize FastAPI instance
-  // const FastTest = new FastAPI({
-  //   measureUpload: true,
-  //   downloadUnit: SpeedUnits.MBps,
-  //   timeout: 60000
-  // });
+  // Function to get download speed test
+  const getSpeedTestResults = async () => {
+    try {
+      const response = await fetch('/api/getTestResults');
+      if (!response.ok) throw new Error('Network response was not ok');
+      const data = await response.json();
+      return {
+        download: data.downloadSpeed.toFixed(2), 
+        upload: data.uploadSpeed.toFixed(2),
+        ping: data.latency,
+      };
+    } catch (error) {
+      console.error('Error fetching speed test results:', error);
+      return {
+        download: 'LOADING..',
+        upload: 'LOADING..',
+        ping: 'LOADING..',
+      };
+    }
+  };
 
   // Handler for click event on "MORE INFORMATION"
   const handleMoreInfoClick = () => {
@@ -46,14 +70,7 @@ const Speed: React.FC<SpeedProps> = ({ onButtonClick }) => {
   const handleYellowCircleClick = async () => {
     setSvg(<GreenCircle width="100px" height="100px" />); // Change SVG to GreenCircle
     setShowInfo(false);
-    setIsCounting(true); // Start the counter
-
-    // try {
-    //   const result = await FastTest.runTest();
-    //   setSpeed(result.downloadSpeed); // Set the speed from the test result
-    // } catch (e) {
-    //   console.error(e);
-    // }
+    setIsCounting(true); // Start the counter    
   };
 
   // Function to handle closing the overlay
@@ -62,27 +79,48 @@ const Speed: React.FC<SpeedProps> = ({ onButtonClick }) => {
     onButtonClick();
   };
 
-  // Effect to handle the pseudo counter
+  useEffect(() => {
+    const interval = 500; // Interval 
+
+    const fetchSpeedTestResults = async () => {
+      const { download, upload, ping } = await getSpeedTestResults();
+      console.log(download,upload,ping);
+      setSpeed_(download);
+      setDownload_(download);
+      setUpload_(upload);
+      setPing_(ping);
+    };
+
+    // Fetch initial results and set interval for subsequent calls
+    fetchSpeedTestResults(); 
+    const timer = setInterval(fetchSpeedTestResults, interval);
+
+    // Cleanup function to clear the interval when the component unmounts
+    return () => clearInterval(timer);
+  }, []); 
+
   useEffect(() => {
     if (isCounting) {
       const intervalId = setInterval(() => {
-        const randomSpeed = (Math.random() * 100).toFixed(2);
-        setSpeed(parseFloat(randomSpeed));
+        const randomSpeed = (Math.random() * 1000).toFixed(2);
+        setSpeed(randomSpeed);
       }, 200);
 
-      // After 3 seconds, stop the counter and set the final speed
+      // Stop updating after 20 seconds
       const timeoutId = setTimeout(() => {
         clearInterval(intervalId);
-        setSpeed(105.31); // Use the actual speed from the test result instead
+        setIsCounting(false);
         setSvg(<div className="relative flex justify-center items-center">
           <YellowCircle width="95px" height="95px" />
-          <span className="absolute text-white text-[20px] font-light tracking-[.1vw] cursor-pointer">GO</span>
+          <span className="absolute text-white text-[20px] font-light tracking-[.1vw] cursor-pointer" style={{ zIndex: 10 }}>GO</span>
         </div>);
-        setIsCounting(false);
-        setShowInfo(true); // Show the "MORE INFORMATION" text
-      }, 3000);
+        setShowInfo(true);
+        setSpeed(speed_);
+        setDownload(download_);
+        setUpload(upload_);
+        setPing(ping_);
+      }, 5000); 
 
-      // Cleanup on component unmount or when counting stops
       return () => {
         clearInterval(intervalId);
         clearTimeout(timeoutId);
@@ -95,14 +133,17 @@ const Speed: React.FC<SpeedProps> = ({ onButtonClick }) => {
       {isMobile && showOverlay ?
         (
           <div className={`${styles.overlay} relative m1-[20px] w-[96vw] h-100 bg-black opacity-100`}>
-            <MoreInfoPage onClose={handleCloseOverlay} />
+            <MoreInfoPage download={download}
+              upload={upload}
+              ping={ping}
+              onClose={handleCloseOverlay} />
           </div>
         ) :
         (
           <>
             <div className={`flex items-center ${styles.speedMainRow} h-full`}>
               {/* Sub Row */}
-              <div className={`flex items-center justify-center ${styles.speedSubRow}`}>
+              <div className={`flex items-center justify-center ${styles.speedSubRow}`} >
                 {speed}
               </div>
 
@@ -129,9 +170,9 @@ const Speed: React.FC<SpeedProps> = ({ onButtonClick }) => {
                 >
                   {svg}
                 </div>
-                
+
               </div>
-              
+
             </div>
             {!isMobile && showInfo && (
               <div
@@ -145,9 +186,16 @@ const Speed: React.FC<SpeedProps> = ({ onButtonClick }) => {
             {/* Conditionally render the overlay */}
             {showOverlay && (
               <div className={`${styles.overlay} absolute top-15 w-[96vw] h-90 bg-black opacity-90`}>
-                <MoreInfoPage onClose={handleCloseOverlay} />
+                <MoreInfoPage
+                download={download}
+                upload={upload}
+                ping={ping}
+                 onClose={handleCloseOverlay} />
               </div>
             )}
+
+
+
           </>
         )}
 

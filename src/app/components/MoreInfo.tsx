@@ -2,17 +2,23 @@ import React, { useState, useEffect } from 'react';
 import styles from './MoreInfo.module.css';
 import { useMediaQuery } from '@uidotdev/usehooks';
 import { useLocation } from '../contexts/LocationContext';
-import { ip, ipv6, mac } from 'address';
+
 
 // SVGs
 import Arrow from './Svgs/Arrow';
 import UserIcon from './Svgs/UserIcon';
 import WifiIcon from './Svgs/Wifi';
-import Flag from './Svgs/flag';
 import ArrowUp from './Svgs/ArrowUp';
 import ArrowDown from './Svgs/ArrowDown';
 
-// Function to get IP address (you need to implement this or use an existing library)
+interface MoreInfoPageProps {
+  download: string;
+  upload: string;
+  ping: string;
+  onClose: () => void; // Prop to handle closing the overlay
+}
+
+// Function to get IP address 
 const getIpAddress = async () => {
   try {
     const response = await fetch('https://api.ipify.org?format=json');
@@ -24,42 +30,8 @@ const getIpAddress = async () => {
   }
 };
 
-// Function to get local IP address
-const getLocalIP = async () => {
-  try {
-    const ipRegex = /([0-9]{1,3}\.){3}[0-9]{1,3}/;
 
-    const pc = new RTCPeerConnection({
-      iceServers: [],
-    });
-
-    pc.createDataChannel('');
-
-    const offer = await pc.createOffer();
-    await pc.setLocalDescription(offer);
-
-    return new Promise<string>((resolve) => {
-      pc.onicecandidate = (ice) => {
-        if (ice && ice.candidate && ice.candidate.candidate) {
-          const ipMatch = ipRegex.exec(ice.candidate.candidate);
-          if (ipMatch) {
-            resolve(ipMatch[0]);
-            pc.onicecandidate = null; 
-          }
-        }
-      };
-    });
-  } catch (error) {
-    console.error('Error fetching local IP address:', error);
-    return 'N/A';
-  }
-};
-
-interface MoreInfoPageProps {
-  onClose: () => void; // Prop to handle closing the overlay
-}
-
-const MoreInfoPage: React.FC<MoreInfoPageProps> = ({ onClose }) => {
+const MoreInfoPage: React.FC<MoreInfoPageProps> = ({ download, upload, ping, onClose }) => {
   // UseMediaQuery hook to detect mobile screen
   const isMobile = useMediaQuery('(max-width: 1000px)');
   const { locationData, isLoading } = useLocation();
@@ -70,6 +42,9 @@ const MoreInfoPage: React.FC<MoreInfoPageProps> = ({ onClose }) => {
   const [macAddress, setMacAddress] = useState<string>('LOADING..');
   const [internalIp, setInternalIp] = useState<string>('LOADING..');
   const [externalIp, setExternalIp] = useState<string>('LOADING..');
+  const [isp, setIsp] = useState<string>('LOADING..');
+  const [server, setServer] = useState<string>('LOADING..');
+  const [router, setRouter] = useState<string>('LOADING..');
 
   // Function to format date and time
   const formatDate = (date: Date) => {
@@ -85,6 +60,7 @@ const MoreInfoPage: React.FC<MoreInfoPageProps> = ({ onClose }) => {
     return `${hours}:${minutes}`;
   };
 
+
    // Update date and time every second
    useEffect(() => {
     const intervalId = setInterval(() => {
@@ -97,11 +73,9 @@ const MoreInfoPage: React.FC<MoreInfoPageProps> = ({ onClose }) => {
     return () => clearInterval(intervalId);
   }, []);
 
-  // Fetch MAC address and IP addresses
+
+  // Fetch  IP addresses
   useEffect(() => {
-    // macaddress.one()
-    //   .then(mac => setMacAddress(mac))
-    //   .catch(err => console.error('Error retrieving MAC address:', err));
     
     getIpAddress().then(ip => {
       setExternalIp(ip);
@@ -109,54 +83,60 @@ const MoreInfoPage: React.FC<MoreInfoPageProps> = ({ onClose }) => {
 
   }, []);
 
-  // useEffect(() => {
-  //   const fetchNetworkInfo = async () => {
-  //     try {
-  //       // Fetch the network address
-  //       const addr = await address();
-
-  //       setInternalIp(addr.ip || 'N/A'); 
-  
-  
-
-  //     } catch (error) {
-  //       console.error('Error fetching network information:', error);
-  //     }
-  //   };
-  
-  //   fetchNetworkInfo();
-  // }, []);
-
-  // useEffect(() => {
-  //   // Retrieve IPv4 address
-  //   setInternalIp(ip() || 'N/A');
-
-
-  //   // Retrieve MAC address
-  //   mac((err, addr) => {
-  //     if (err) {
-  //       console.error('Error fetching MAC address:', err);
-  //     } else {
-  //       setMacAddress(addr || 'N/A');
-  //     }
-  //   });
-  // }, []);
-  
-
   useEffect(() => {
-    async function fetchMacAddress() {
+    const fetchWifiNetworks = async () => {
       try {
-        const response = await fetch('/api/getAddress');
+        const response = await fetch('/api/getRouter');
+        if (!response.ok) {
+          throw new Error('Failed to fetch Wi-Fi networks');
+        }
         const data = await response.json();
-        setMacAddress(data.macAddress);
+        setRouter(data.networks[0].ssid.toUpperCase());
+        setMacAddress(data.networks[0].mac.toUpperCase());
       } catch (error) {
-        console.log(error)
+        console.error('Error fetching Wi-Fi networks:', error);
       }
-    }
+    };
 
-    fetchMacAddress();
+    fetchWifiNetworks();
   }, []);
 
+  useEffect(() => {
+    const fetchInternalIps = async () => {
+      try {
+        const response = await fetch('/api/getInternalIp');
+        if (!response.ok) {
+          throw new Error('Failed to fetch internal IP addresses');
+        }
+        const data = await response.json();
+        setInternalIp(data.ipv4);
+      } catch (error) {
+        console.error('Error fetching internal IP addresses:', error);
+      }
+    };
+
+    fetchInternalIps();
+  }, []);
+
+
+  useEffect(() => {
+    const fetchTestData = async () => {
+      try {
+        const response = await fetch('/api/getIspServer');
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        console.log(data);
+        setIsp(data.clientIsp);
+        setServer(data.firstServerCity);
+      } catch (error) {
+        console.error('Error fetching speed test data:', error);
+      }
+    };
+
+    fetchTestData();
+  }, []);
 
   return (
     <div className={`flex w-full h-full ${styles.moreInfoRow}`}>
@@ -203,7 +183,7 @@ const MoreInfoPage: React.FC<MoreInfoPageProps> = ({ onClose }) => {
                 </tr>
                 <tr>
                   <td className={`${styles.labelCell}`}>INTERNAL IP</td>
-                  <td className={`${styles.dataCell}`}>10.0.0.183</td>
+                  <td className={`${styles.dataCell}`}>{internalIp}</td>
                 </tr>
                 <tr>
                   <td className={`${styles.labelCell}`}>EXTERNAL IP</td>
@@ -211,7 +191,7 @@ const MoreInfoPage: React.FC<MoreInfoPageProps> = ({ onClose }) => {
                 </tr>
                 <tr>
                   <td className={`${styles.labelCell}`}>MAC ADDRESS</td>
-                  <td className={`${styles.dataCell}`}>5D:C3:07:7A:C4:88</td>
+                  <td className={`${styles.dataCell}`}>{macAddress}</td>
                 </tr>
                 <tr>
                   <td className={`${styles.emptyCell}`} rowSpan={1}></td>
@@ -221,19 +201,19 @@ const MoreInfoPage: React.FC<MoreInfoPageProps> = ({ onClose }) => {
                 <tr>
                   <td className={`${styles.iconCell}`} rowSpan={4}><WifiIcon width="5vh" height="5vh" className={` ${styles.svgIcon}`} /></td>
                   <td className={`${styles.labelCell}`}>PROVIDER</td>
-                  <td className={`${styles.dataCell}`}>VIRGIN MEDIA</td>
+                  <td className={`${styles.dataCell}`}>{isp.toUpperCase()}</td>
                 </tr>
                 <tr>
                   <td className={`${styles.labelCell}`}>ROUTER NAME</td>
-                  <td className={`${styles.dataCell}`}>TP LINK</td>
+                  <td className={`${styles.dataCell}`}>{router}</td>
                 </tr>
                 <tr>
                   <td className={`${styles.labelCell}`}>SERVER</td>
-                  <td className={`${styles.dataCell}`}>LONDON</td>
+                  <td className={`${styles.dataCell}`}>{server.toUpperCase()}</td>
                 </tr>
                 <tr>
                   <td className={`${styles.labelCell}`}>PING</td>
-                  <td className={`${styles.dataCell}`}>12 ms</td>
+                  <td className={`${styles.dataCell}`}>{ping} ms</td>
                 </tr>
                 <tr>
                   <td className={`${styles.emptyCell}`} rowSpan={1}></td>
@@ -261,7 +241,7 @@ const MoreInfoPage: React.FC<MoreInfoPageProps> = ({ onClose }) => {
           <div className={`flex items-center ${styles.speedMainRow}`}>
             {/* Sub Row */}
             <div className={`flex items-end justify-end ${styles.speedSubRow}`}>
-              105.31
+              {download}
             </div>
 
             {/* Sub Column */}
@@ -292,7 +272,7 @@ const MoreInfoPage: React.FC<MoreInfoPageProps> = ({ onClose }) => {
           <div className={`flex items-center ${styles.speedMainRow} `}>
             {/* Sub Row */}
             <div className={`flex items-end justify-end ${styles.speedSubRow}`}>
-              52.97
+              {upload}
             </div>
 
             {/* Sub Column */}

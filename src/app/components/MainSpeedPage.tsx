@@ -11,13 +11,29 @@ import ZifiHeaderIcon from '../components/Svgs/ZifiHeaderIcon';
 import ZtfrFooter from '../components/Svgs/ZtfrFooter';
 import ZimoFooter from '../components/Svgs/Zimo-footer';
 import ZmeetFooter from '../components/Svgs/Zmeet-footer';
-import Flag from '../components/Svgs/flag';
 import { useMediaQuery } from '@uidotdev/usehooks';
 
 const MainSpeedPage: React.FC = () => {
   const [changeText, setChangeText] = useState("YOUR INTERNET SPEED");
   const { locationData, isLoading } = useLocation();
   const isMobile = useMediaQuery('(max-width: 1000px)'); // Media query to check for mobile screens
+  
+
+  // Start speed test when the component mounts
+  useEffect(() => {
+    const eventSource = new EventSource('/api/execute-fast');
+    const startSpeedTest = async () => {
+      try {
+        await fetch('/api/execute-fast');     
+
+      } catch (error) {
+        console.error('Error starting or fetching speed test:', error);
+      }
+    };
+
+    startSpeedTest();
+  }, []);
+
 
   const handleButtonClick = () => {
     setChangeText((prevText) =>

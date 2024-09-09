@@ -16,18 +16,13 @@ const SpeedChecker: React.FC = () => {
     scScript.addEventListener('load', () => {
       (window as any).SCAPI.init();
 
-      // Example: Check if API has methods for events or state
-      if ((window as any).SCAPI && typeof (window as any).SCAPI.getStatus === 'function') {
-        const interval = setInterval(() => {
-          const status = (window as any).SCAPI.getStatus();
-          console.log('Speed Test Status:', status);
-          if (status === 'completed') {
-            clearInterval(interval);
-          }
-        }, 1000);
-      } else {
-        console.error('SpeedChecker API does not support event listeners or status methods.');
-      }
+      window.speedcheckerReady= function(data) {
+        console.log("REady!");
+        window.SCApplication.startTest();
+        }
+        
+
+      
     });
 
     // Clean up the script on component unmount
@@ -39,6 +34,7 @@ const SpeedChecker: React.FC = () => {
   // Method to start the speed test
   const startTest = () => {
     if (window.SCApplication) {
+      console.log('Here');
       window.SCApplication.startTest();
     } else {
       console.error('SpeedChecker API is not initialized.');
@@ -46,11 +42,14 @@ const SpeedChecker: React.FC = () => {
   };
 
   return (
+    
     <div>
-      <button onClick={startTest}>Start Speed Test</button>
+      <button onClick={startTest} className='mb-100'>Start Speed Test</button>
       <div id="speedcheckerdiv"></div>
     </div>
   );
 };
 
 export default SpeedChecker;
+
+
