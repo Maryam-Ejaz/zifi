@@ -140,22 +140,25 @@ const MoreInfoPage: React.FC<MoreInfoPageProps> = ({ download, upload, ping, onC
 
 
   useEffect(() => {
-    const fetchTestData = async () => {
+    const fetchFastData = async () => {
       try {
-        const response = await fetch('/api/getIspServer');
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
+        const response = await fetch(
+          'https://api.fast.com/netflix/speedtest/v2?https=true&token=YXNkZmFzZGxmbnNkYWZoYXNkZmhrYWxm&urlCount=1'
+        );
         const data = await response.json();
-        console.log(data);
-        setIsp(data.clientIsp);
-        setServer(data.firstServerCity);
+        const clientIsp = data.client.isp || 'LOADING..';
+        const firstServerCity = data.targets[0].location.city || 'LOADING..';
+
+        setIsp(clientIsp);
+        setServer(firstServerCity);
       } catch (error) {
-        console.error('Error fetching speed test data:', error);
+        console.error('Error fetching Fast.com data:', error);
+        setIsp('ERROR');
+        setServer('ERROR');
       }
     };
 
-    fetchTestData();
+    fetchFastData();
   }, []);
 
   return (
