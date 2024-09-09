@@ -1,7 +1,5 @@
-// pages/api/getWifiNetworks.ts
-
 import type { NextApiRequest, NextApiResponse } from 'next';
-const wifi = require('node-wifi');
+import wifi from 'node-wifi';
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   // Initialize wifi module
@@ -22,7 +20,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       security: network.security,
       mac: network.mac,
     }));
-    
+
     res.status(200).json({ networks: ssidList });
   });
 }
