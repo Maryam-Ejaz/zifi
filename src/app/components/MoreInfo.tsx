@@ -30,6 +30,26 @@ const getIpAddress = async () => {
   }
 };
 
+// Function to get download speed test
+const getSpeedTestResults = async () => {
+  try {
+    const response = await fetch('/api/getTestResults');
+    if (!response.ok) throw new Error('Network response was not ok');
+    const data = await response.json();
+    return {
+      download: data.downloadSpeed.toFixed(2), 
+      upload: data.uploadSpeed.toFixed(2),
+      ping: data.latency,
+    };
+  } catch (error) {
+    console.error('Error fetching speed test results:', error);
+    return {
+      download: 'LOADING..',
+      upload: 'LOADING..',
+      ping: 'LOADING..',
+    };
+  }
+};
 
 const MoreInfoPage: React.FC<MoreInfoPageProps> = ({ download, upload, ping, onClose }) => {
   // UseMediaQuery hook to detect mobile screen

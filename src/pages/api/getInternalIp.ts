@@ -1,3 +1,4 @@
+"use client"
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { internalIpV4, internalIpV6 } from 'internal-ip';
 

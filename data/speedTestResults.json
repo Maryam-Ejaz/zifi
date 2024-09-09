@@ -1,10 +1,10 @@
 {
-  "downloadSpeed": 240,
-  "uploadSpeed": 8.4,
-  "downloaded": 320,
-  "uploaded": 50,
-  "latency": 10,
-  "bufferBloat": 49,
+  "downloadSpeed": 210,
+  "uploadSpeed": 3.1,
+  "downloaded": 310,
+  "uploaded": 20,
+  "latency": 9,
+  "bufferBloat": 81,
   "userLocation": "Kotli Mughlan, PK",
   "userIp": "2407:d000:603:e393:5800:7d5a:88e4:dd9d"
 }
